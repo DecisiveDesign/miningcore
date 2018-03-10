@@ -437,6 +437,7 @@ namespace MiningCore.Blockchain.ZCash
 		{ CoinType.HUSH, ZCLCoinbaseTxConfig },
 		{ CoinType.KMD, ZCLCoinbaseTxConfig },
 		{ CoinType.SNG, SNGCoinbaseTxConfig },
+		{ CoinType.BTCZ, ZCLCoinbaseTxConfig },
 				
             };
     }

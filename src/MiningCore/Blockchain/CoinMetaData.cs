@@ -50,6 +50,7 @@ namespace MiningCore.Blockchain
 	    { CoinType.VIS, new Dictionary<string, string> { { string.Empty, "http://explorer.visioncha.in/block-index/{0}" } }},
 	    { CoinType.KMD, new Dictionary<string, string> { { string.Empty, "https://kmd.explorer.supernet.org/block-index/{0}" } }},
 	    { CoinType.SNG, new Dictionary<string, string> { { string.Empty, "https://insight.snowgem.org/block-index/{0}" } }},
+		{ CoinType.BTCZ, new Dictionary<string, string> { { string.Empty, "https://bitcoinz.ph/block-index/{0}" } }},
         };
 
         public static readonly Dictionary<CoinType, string> TxInfoLinks = new Dictionary<CoinType, string>
@@ -86,6 +87,7 @@ namespace MiningCore.Blockchain
 	    { CoinType.VIS, "http://explorer.visioncha.in/tx/{0}" },
 	    { CoinType.KMD, "https://kmd.explorer.supernet.org/tx/{0}" },
 	    { CoinType.SNG, "https://insight.snowgem.org/tx/{0}" },
+		{ CoinType.BTCZ, "https://bitcoinz.ph/tx/{0}" },
         };
 
         public static readonly Dictionary<CoinType, string> AddressInfoLinks = new Dictionary<CoinType, string>
@@ -119,6 +121,7 @@ namespace MiningCore.Blockchain
 	    { CoinType.VIS, "http://explorer.visioncha.in/address/{0}" },
 	    { CoinType.KMD, "https://kmd.explorer.supernet.org/address/{0}" },
 	    { CoinType.SNG, "https://insight.snowgem.org/address/{0}" },
+		{ CoinType.BTCZ, "https://bitcoinz.ph/address/{0}" },
         };
 
         private const string Ethash = "Dagger-Hashimoto";
@@ -160,6 +163,7 @@ namespace MiningCore.Blockchain
 	    { CoinType.VIS, BitcoinProperties.GetAlgorithm },
 	    { CoinType.KMD, BitcoinProperties.GetAlgorithm },
 	    { CoinType.SNG, BitcoinProperties.GetAlgorithm },
+		{ CoinType.BTCZ, BitcoinProperties.GetAlgorithm },
         };
     }
 }

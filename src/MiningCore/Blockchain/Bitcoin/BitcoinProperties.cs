@@ -123,11 +123,12 @@ namespace MiningCore.Blockchain.Bitcoin
             { CoinType.ZCL, equihashCoin },
             { CoinType.ZEN, equihashCoin },
             { CoinType.BTCP, equihashCoin },
-	    { CoinType.VIS, equihashCoin },
-	    { CoinType.HUSH, equihashCoin },
-	    { CoinType.ZEL, equihashCoin },
-	    { CoinType.KMD, equihashCoin },
-	    { CoinType.SNG, equihashCoin },
+			{ CoinType.VIS, equihashCoin },
+			{ CoinType.HUSH, equihashCoin },
+			{ CoinType.ZEL, equihashCoin },
+			{ CoinType.KMD, equihashCoin },
+			{ CoinType.SNG, equihashCoin },
+			{ CoinType.BTCZ, equihashCoin },
 
             // Neoscrypt
             { CoinType.GBX, neoScryptCoin },
