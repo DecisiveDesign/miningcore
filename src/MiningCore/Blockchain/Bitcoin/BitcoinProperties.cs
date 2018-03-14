@@ -77,6 +77,7 @@ namespace MiningCore.Blockchain.Bitcoin
 
         private static readonly BitcoinCoinProperties neoScryptCoin =
             new BitcoinCoinProperties(Math.Pow(2, 16), sha256D, neoScryptProfile1, new DigestReverser(neoScryptProfile1), "Neoscrypt");
+
         private static readonly BitcoinCoinProperties vergeLyraCoin =
             new BitcoinCoinProperties(Math.Pow(2, 8), sha256D, lyra2Rev2, new DigestReverser(scrypt_1024_1), "Lyra2re2");
 
@@ -96,7 +97,7 @@ namespace MiningCore.Blockchain.Bitcoin
             { CoinType.BCH, sha256Coin },
             { CoinType.NMC, sha256Coin },
             { CoinType.PPC, sha256Coin },
-	    { CoinType.GLT, sha256Coin },
+			{ CoinType.GLT, sha256Coin },
 
             // Scrypt
             { CoinType.LTC, scryptCoin },

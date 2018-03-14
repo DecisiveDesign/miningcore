@@ -287,7 +287,7 @@ namespace MiningCore.Blockchain.Bitcoin
 
             await manager.StartAsync();
 
-            if (poolConfig.EnableInternalStratum)
+            if (poolConfig.EnableInternalStratum == true)
 	        {
 		        disposables.Add(manager.Jobs.Subscribe(OnNewJob));
 
@@ -357,7 +357,7 @@ namespace MiningCore.Blockchain.Bitcoin
             if (poolConfig.Coin.Type == CoinType.MONA || poolConfig.Coin.Type == CoinType.VTC ||
                 poolConfig.Coin.Type == CoinType.STAK ||
                 (poolConfig.Coin.Type == CoinType.XVG && poolConfig.Coin.Algorithm.ToLower() == "lyra"))
-                result *= 2.0;
+                result *= 4;
 
           return result;
         }

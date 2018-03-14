@@ -35,12 +35,14 @@ using MiningCore.Persistence;
 using MiningCore.Persistence.Model;
 using MiningCore.Persistence.Repositories;
 using MiningCore.Time;
+using MiningCore.Util;
 using Newtonsoft.Json.Linq;
+using Block = MiningCore.Persistence.Model.Block;
 using Contract = MiningCore.Contracts.Contract;
 
 namespace MiningCore.Blockchain.ZCash
 {
-    [CoinMetadata(CoinType.ZEC, CoinType.ZCL, CoinType.ZEN, CoinType.BTCZ, CoinType.BTCP, CoinType.ZEL, CoinType.HUSH, CoinType.VIS, CoinType.SNG, CoinType.KMD)]
+    [CoinMetadata(CoinType.ZEC, CoinType.ZCL, CoinType.ZEN, CoinType.BTCP, CoinType.ZEL, CoinType.HUSH, CoinType.VIS, CoinType.SNG, CoinType.KMD)]
     public class ZCashPayoutHandler : BitcoinPayoutHandler
     {
         public ZCashPayoutHandler(

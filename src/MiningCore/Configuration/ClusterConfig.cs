@@ -62,6 +62,7 @@ namespace MiningCore.Configuration
         VIS, // Vision
 		KMD, // Komodo
 		SNG, // SnowGem
+		BTCZ, // SnowGem
     }
 
     public class CoinConfig
@@ -284,6 +285,16 @@ namespace MiningCore.Configuration
         public string Topic { get; set; }
     }
 
+    public partial class ShareRelayConfig
+    {
+        public string PublishUrl { get; set; }
+
+        /// <summary>
+        /// If set to true, the relay will "Connect" to the url, rather than "Bind" it 
+        /// </summary>
+        public bool Connect { get; set; }
+    }
+
     public partial class PoolConfig
     {
         public string Id { get; set; }
@@ -300,11 +311,11 @@ namespace MiningCore.Configuration
         public int ClientConnectionTimeout { get; set; }
         public int JobRebroadcastTimeout { get; set; }
         public int BlockRefreshInterval { get; set; }
-        public int UpdateInterval { get; set; }
+
         /// <summary>
         /// If true, internal stratum ports are not initialized
         /// </summary>
-        public bool EnableInternalStratum { get; set; }
+        public bool? EnableInternalStratum { get; set; }
 
         /// <summary>
         /// External stratums (ZMQ based share publishers)
@@ -327,11 +338,11 @@ namespace MiningCore.Configuration
         public decimal? DevDonation { get; set; }
 
         /// <summary>
-        /// If this is enabled, shares are not written to the database 
-        /// but published on the specified ZeroMQ Url and using the 
+        /// If this is enabled, shares are not written to the database
+        /// but published on the specified ZeroMQ Url and using the
         /// poolid as topic
         /// </summary>
-        public string ShareRelayPublisherUrl { get; set; }
+        public ShareRelayConfig ShareRelay { get; set; }
 
         /// <summary>
         /// Maximum parallelism of Equihash solver
