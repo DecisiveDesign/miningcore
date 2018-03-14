@@ -83,7 +83,7 @@ namespace MiningCore.Mining
                 // warm-up delay
                 Thread.Sleep(TimeSpan.FromSeconds(10));
 
-                var interval = TimeSpan.FromMinutes(5);
+                var interval = TimeSpan.FromMinutes(clusterConfig.PoolStatsUpdateInterval);
 
                 while (true)
                 {
@@ -145,6 +145,8 @@ namespace MiningCore.Mining
 
                 var byMiner = result.GroupBy(x => x.Miner).ToArray();
 
+                pool.UpdateNetworkStats().Wait();
+
                 if (result.Length > 0)
                 {
                     // calculate pool stats
@@ -174,7 +176,6 @@ namespace MiningCore.Mining
 
                     mapper.Map(pool.PoolStats, mapped);
                     mapper.Map(pool.NetworkStats, mapped);
-
                     statsRepo.InsertPoolStats(con, tx, mapped);
                 });
 

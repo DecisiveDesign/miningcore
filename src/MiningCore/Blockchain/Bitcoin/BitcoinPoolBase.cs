@@ -377,6 +377,18 @@ namespace MiningCore.Blockchain.Bitcoin
             }
         }
 
+        public override async Task UpdateNetworkStats()
+        {
+            try
+            {
+                await manager.UpdateNetworkStats();
+                blockchainStats = manager.BlockchainStats;
+            } catch (Exception ex)
+            {
+                logger.Error(ex, $"Exception updating network stats for pool {poolConfig.PoolName}");
+            }
+        }
+
         #endregion // Overrides
     }
 }

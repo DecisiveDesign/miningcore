@@ -380,6 +380,14 @@ namespace MiningCore.Blockchain.Bitcoin
             BlockchainStats.ConnectedPeers = (int) (long) connectionCountResponse;
         }
 
+        public async Task UpdateNetworkStats()
+        {
+            if (!hasLegacyDaemon)
+                await UpdateNetworkStatsAsync();
+            else
+                await UpdateNetworkStatsLegacyAsync();
+        }
+
         #region API-Surface
 
         public IObservable<object> Jobs { get; private set; }
@@ -788,16 +796,6 @@ namespace MiningCore.Blockchain.Bitcoin
         {
             var job = currentJob;
             return job?.GetJobParams(isNew);
-        }
-
-        protected override void RunUpdates(PoolConfig config)
-        {
-            logger.Info($"Updating stats for pool {config.PoolName} : PoolId {config.Id}");
-            if (!hasLegacyDaemon)
-                UpdateNetworkStatsAsync().Wait();
-            else
-                UpdateNetworkStatsLegacyAsync().Wait();
-            logger.Info($"Update complete for pool {config.PoolName} : PoolId {config.Id}");
         }
 
         #endregion // Overrides

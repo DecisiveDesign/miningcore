@@ -57,11 +57,8 @@ namespace MiningCore.Configuration
         GBX,  // GoByte
         CRC,  // CrowdCoin
         BTCP, // Bitcoin Private
-		ZEL, // Zelcash
-        HUSH, // Hush
-        VIS, // Vision
-		KMD, // Komodo
-		SNG, // SnowGem
+        VIS,  // Vision
+        ZEL,  // ZEL
     }
 
     public class CoinConfig
@@ -300,7 +297,7 @@ namespace MiningCore.Configuration
         public int ClientConnectionTimeout { get; set; }
         public int JobRebroadcastTimeout { get; set; }
         public int BlockRefreshInterval { get; set; }
-        public int UpdateInterval { get; set; }
+
         /// <summary>
         /// If true, internal stratum ports are not initialized
         /// </summary>
@@ -325,7 +322,7 @@ namespace MiningCore.Configuration
         public NotificationsConfig Notifications { get; set; }
         public ApiConfig Api { get; set; }
         public decimal? DevDonation { get; set; }
-
+        public int PoolStatsUpdateInterval { get; set; } = 5; // Default to 5 minute
         /// <summary>
         /// If this is enabled, shares are not written to the database 
         /// but published on the specified ZeroMQ Url and using the 

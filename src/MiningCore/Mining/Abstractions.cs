@@ -46,6 +46,7 @@ namespace MiningCore.Mining
         BlockchainStats NetworkStats { get; }
         void Configure(PoolConfig poolConfig, ClusterConfig clusterConfig);
         double HashrateFromShares(double shares, double interval);
+        Task UpdateNetworkStats();
         Task StartAsync();
     }
 }

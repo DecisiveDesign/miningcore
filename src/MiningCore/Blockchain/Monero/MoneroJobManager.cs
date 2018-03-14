@@ -308,6 +308,11 @@ namespace MiningCore.Blockchain.Monero
             return share;
         }
 
+        public async Task UpdateNetworkStats()
+        {
+            await UpdateNetworkStatsAsync();
+        }
+
         #endregion // API-Surface
 
         #region Overrides
@@ -438,13 +443,6 @@ namespace MiningCore.Blockchain.Monero
             await UpdateNetworkStatsAsync();
 
             SetupJobUpdates();
-        }
-
-        protected override void RunUpdates(PoolConfig config)
-        {
-            logger.Info($"Updating stats for pool {config.PoolName} : PoolId {config.Id}");
-            UpdateNetworkStatsAsync().Wait();
-            logger.Info($"Update complete for pool {config.PoolName} : PoolId {config.Id}");
         }
 
         private void ConfigureRewards()

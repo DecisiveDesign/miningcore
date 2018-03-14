@@ -52,8 +52,7 @@ using Contract = MiningCore.Contracts.Contract;
 
 namespace MiningCore.Mining
 {
-    public abstract class PoolBase<TShare> : StratumServer,
-        IMiningPool
+    public abstract class PoolBase<TShare> : StratumServer, IMiningPool
 		where TShare: IShare
     {
         protected PoolBase(IComponentContext ctx,
@@ -419,6 +418,11 @@ Pool Fee:               {poolConfig.RewardRecipients.Sum(x => x.Percentage)}%
         }
 
         public abstract double HashrateFromShares(double shares, double interval);
+
+        public virtual async Task UpdateNetworkStats()
+        {
+            await Task.CompletedTask;
+        }
 
         public virtual async Task StartAsync()
         {

@@ -346,6 +346,18 @@ namespace MiningCore.Blockchain.Ethereum
                 logger.ThrowLogPoolStartupException("\"paymentProcessing.coinbasePassword\" pool-configuration property missing or empty (required for unlocking wallet during payment processing)");
         }
 
+        public override async Task UpdateNetworkStats()
+        {
+            try
+            {
+                await manager.UpdateNetworkStats();
+                blockchainStats = manager.BlockchainStats;
+            } catch (Exception ex)
+            {
+                logger.Error(ex, $"Exception updating network status for pool {poolConfig.PoolName}");
+            }
+        }
+
         #endregion // Overrides
     }
 }

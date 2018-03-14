@@ -440,6 +440,10 @@ namespace MiningCore.Blockchain.Ethereum
 
         public BlockchainStats BlockchainStats { get; } = new BlockchainStats();
 
+        public async Task UpdateNetworkStats()
+        {
+            await UpdateNetworkStatsAsync();
+        }
         #endregion // API-Surface
 
         #region Overrides
