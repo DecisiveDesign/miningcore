@@ -107,7 +107,7 @@ namespace MiningCore.Mining
             var context = CreateClientContext();
 
             var poolEndpoint = poolConfig.Ports[client.PoolEndpoint.Port];
-            context.Init(poolConfig, poolEndpoint.Difficulty, poolConfig.EnableInternalStratum ? poolEndpoint.VarDiff : null, clock);
+            context.Init(poolConfig, poolEndpoint.Difficulty, poolConfig.EnableInternalStratum == true ? poolEndpoint.VarDiff : null, clock);
             client.SetContext(context);
 
             // varDiff setup
@@ -222,7 +222,8 @@ namespace MiningCore.Mining
 	                                // re-publish
 	                                shareSubject.OnNext(new ClientShare(null, share));
 
-	                                logger.Info(() => $"[{LogCat}] External share accepted: D={Math.Round(share.Difficulty, 3)}");
+	                                var source = !string.IsNullOrEmpty(share.Source) ? $"[{share.Source.ToUpper()}]" : string.Empty;
+	                                logger.Info(() => $"[{LogCat}] External {source} share accepted: D={Math.Round(share.Difficulty, 3)}");
 	                            }
 	                        }
 	                    }
@@ -316,7 +317,7 @@ namespace MiningCore.Mining
 
         protected virtual void InitStats()
         {
-            if(string.IsNullOrEmpty(clusterConfig.ShareRelayPublisherUrl))
+            if(clusterConfig.ShareRelay == null)
                 LoadStats();
         }
 
@@ -393,8 +394,8 @@ Current Block Height:   {blockchainStats.BlockHeight}
 Current Connect Peers:  {blockchainStats.ConnectedPeers}
 Network Difficulty:     {blockchainStats.NetworkDifficulty}
 Network Hash Rate:      {FormatUtil.FormatHashrate(blockchainStats.NetworkHashrate)}
-Stratum Port(s):        {string.Join(", ", poolConfig.Ports.Keys)}
-Pool Fee:               {poolConfig.RewardRecipients.Sum(x => x.Percentage)}%
+Stratum Port(s):        {(poolConfig.Ports?.Any() == true ? string.Join(", ", poolConfig.Ports.Keys) : string.Empty )}
+Pool Fee:               {(poolConfig.RewardRecipients?.Any() == true ? poolConfig.RewardRecipients.Sum(x => x.Percentage) : 0)}%
 ";
 
             logger.Info(() => msg);
@@ -436,7 +437,7 @@ Pool Fee:               {poolConfig.RewardRecipients.Sum(x => x.Percentage)}%
 	            await SetupJobManager();
                 InitStats();
 
-                if (poolConfig.EnableInternalStratum)
+                if (poolConfig.EnableInternalStratum == true)
 	            {
 		            var ipEndpoints = poolConfig.Ports.Keys
 			            .Select(port => PoolEndpoint2IPEndpoint(port, poolConfig.Ports[port]))

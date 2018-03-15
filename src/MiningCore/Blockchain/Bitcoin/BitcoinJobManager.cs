@@ -100,7 +100,7 @@ namespace MiningCore.Blockchain.Bitcoin
 
         protected virtual void SetupJobUpdates()
         {
-	        if (!poolConfig.EnableInternalStratum)
+	        if (poolConfig.EnableInternalStratum == false)
 		        return;
 
             jobRebroadcastTimeout = TimeSpan.FromSeconds(Math.Max(1, poolConfig.JobRebroadcastTimeout));
@@ -111,13 +111,21 @@ namespace MiningCore.Blockchain.Bitcoin
             // collect ports
             var zmq = poolConfig.Daemons
                 .Where(x => !string.IsNullOrEmpty(x.Extra.SafeExtensionDataAs<BitcoinDaemonEndpointConfigExtra>()?.ZmqBlockNotifySocket))
-                .ToDictionary(x => x, x => x.Extra.SafeExtensionDataAs<BitcoinDaemonEndpointConfigExtra>().ZmqBlockNotifySocket);
+                .ToDictionary(x => x, x =>
+                {
+                    var extra = x.Extra.SafeExtensionDataAs<BitcoinDaemonEndpointConfigExtra>();
+                    var topic = !string.IsNullOrEmpty(extra.ZmqBlockNotifyTopic) ?
+                        extra.ZmqBlockNotifyTopic :
+                        BitcoinConstants.ZmqPublisherTopicBlockHash;
+
+                    return (Socket: extra.ZmqBlockNotifySocket, Topic: topic);
+                });
 
             if (zmq.Count > 0)
             {
                 logger.Info(() => $"[{LogCat}] Subscribing to ZMQ push-updates from {string.Join(", ", zmq.Values)}");
 
-                var newJobsPubSub = daemon.ZmqSubscribe(zmq, BitcoinConstants.ZmqPublisherTopicBlockHash, 2)
+                var newJobsPubSub = daemon.ZmqSubscribe(zmq, 2)
                     .Select(frames =>
                     {
                         try
@@ -251,16 +259,14 @@ namespace MiningCore.Blockchain.Bitcoin
                 if (errors.Any())
                     logger.Warn(() => $"[{LogCat}] Error(s) refreshing network stats: {string.Join(", ", errors.Select(y => y.Error.Message))}");
             }
-            else
-            {
-                var infoResponse = results[0].Response.ToObject<BlockchainInfo>();
-                var miningInfoResponse = results[1].Response.ToObject<MiningInfo>();
-                var networkInfoResponse = results[2].Response.ToObject<NetworkInfo>();
 
-                BlockchainStats.BlockHeight = infoResponse.Blocks;
-                BlockchainStats.NetworkHashrate = miningInfoResponse.NetworkHashps;
-                BlockchainStats.ConnectedPeers = networkInfoResponse.Connections;
-            }
+            var infoResponse = results[0].Response.ToObject<BlockchainInfo>();
+            var miningInfoResponse = results[1].Response.ToObject<MiningInfo>();
+            var networkInfoResponse = results[2].Response.ToObject<NetworkInfo>();
+
+            BlockchainStats.BlockHeight = infoResponse.Blocks;
+            BlockchainStats.NetworkHashrate = miningInfoResponse.NetworkHashps;
+            BlockchainStats.ConnectedPeers = networkInfoResponse.Connections;
         }
 
         protected virtual async Task<(bool Accepted, string CoinbaseTransaction)> SubmitBlockAsync(BitcoinShare share)
@@ -390,6 +396,8 @@ namespace MiningCore.Blockchain.Bitcoin
 
         #region API-Surface
 
+        public BitcoinNetworkType NetworkType => networkType;
+
         public IObservable<object> Jobs { get; private set; }
 
         public virtual async Task<bool> ValidateAddressAsync(string address)
@@ -518,6 +526,7 @@ namespace MiningCore.Blockchain.Bitcoin
             share.Miner = minerName;
             share.Worker = workerName;
             share.UserAgent = context.UserAgent;
+            share.Source = clusterConfig.ClusterName;
             share.Created = clock.Now;
 
             return share;
@@ -535,7 +544,7 @@ namespace MiningCore.Blockchain.Bitcoin
         public override void Configure(PoolConfig poolConfig, ClusterConfig clusterConfig)
         {
             extraPoolConfig = poolConfig.Extra.SafeExtensionDataAs<BitcoinPoolConfigExtra>();
-            extraPoolPaymentProcessingConfig = poolConfig.PaymentProcessing.Extra.SafeExtensionDataAs<BitcoinPoolPaymentProcessingConfigExtra>();
+            extraPoolPaymentProcessingConfig = poolConfig.PaymentProcessing?.Extra?.SafeExtensionDataAs<BitcoinPoolPaymentProcessingConfigExtra>();
 
             if (extraPoolConfig?.MaxActiveJobs.HasValue == true)
                 maxActiveJobs = extraPoolConfig.MaxActiveJobs.Value;
@@ -641,7 +650,7 @@ namespace MiningCore.Blockchain.Bitcoin
             if (!validateAddressResponse.IsValid)
                 logger.ThrowLogPoolStartupException($"Daemon reports pool-address '{poolConfig.Address}' as invalid", LogCat);
 
-            if (!validateAddressResponse.IsMine)
+            if (clusterConfig.PaymentProcessing?.Enabled == true && !validateAddressResponse.IsMine)
                 logger.ThrowLogPoolStartupException($"Daemon does not own pool-address '{poolConfig.Address}'", LogCat);
 
             isPoS = difficultyResponse.Values().Any(x => x.Path == "proof-of-stake");
